@@ -6,6 +6,10 @@ function controllPen(move: any) {
     }
     return SuperBit.Servo(SuperBit.enServo.S1, 50)
 }
+radio.onReceivedString(function(receivedString: string) {
+    let data:any[] = receivedString.split('|')
+    movments.push([parseFloat(data[0]), parseFloat(data[1]),parseFloat(data[2])])
+})
 
 controllPen('close')
 controllPen('open')
