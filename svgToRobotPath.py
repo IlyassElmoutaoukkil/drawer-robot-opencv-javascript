@@ -7,7 +7,7 @@ import time
 path = [[0,0],[1,3],[1,1],[10,1],[40,104],[59,79]]
 validData = []
 i=0
-speed = 10  # 10cm/1s m1=100 m2=102
+speed = 10  # 10cm/s m1=100 m2=102
 angleSpeed = 0.119 # 90degrees in 753ms
 
 # print(math.pow(math.cos(0.23),-1))
@@ -41,13 +41,9 @@ for p in path:
 
             angle = math.degrees(numpy.arccos(angle))
 
-            t_T = angle/angleSpeed
+            t_T = math.floor(angle/angleSpeed)
             Turn_move = {'m1':100,'m2':-102,'t':t_T}
             validData.append(Turn_move)
-            print('a_distance: ',a_distance)
-            print('b_distance: ',b_distance)
-            print('c_distance: ',c_distance)
-            print('angle: ',t_T)
 
 
 
@@ -75,7 +71,7 @@ ser.write(out2)
 
 for data in validData:
     out = str(data['m1'])+'|'+str(data['m2'])+'|'+str(data['t']) + "\n"
-    # print(out)
+    print(out)
     out2 = out.encode('utf_8')
     ser.write(out2)
     time.sleep(1)
