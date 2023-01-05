@@ -2,27 +2,39 @@
 <head>
 <title> Track Mouse </title>
 <script type="text/javascript">
+    var posX=null
+    var posY=null
 function mouse_position()
 {
     var e = window.event;
 
-    var posX = e.clientX;
-    var posY = e.clientY;
+    posX = e.clientX;
+    posY = e.clientY;
 
     document.Form1.posx.value = posX;
     document.Form1.posy.value = posY;
 
-   
+}
+values = '['
 
+function savepoint(){
+    values = String(values) + '['+posX+','+posY+']'
+    document.getElementById('aa').value=values
+    document.getElementById('board').innerHTML+=('<span style="top:'+posY+';left:'+posX+';position:absolute;background:yellow;width:10px;height:10px;" ><span>')
 }
 </script>
 
 </head>
 
 <body onmousemove="mouse_position()">
-<form name="Form1">
+<div id="board" onclick="savepoint()"  style="height:120px;width:90px;background:red;"></div>
+<form  name="Form1">
+    <input type="text" id="aa">
 POSX: <input type="text" name="posx"><br>
 POSY: <input type="text" name="posy"><br>
 </form>
+
+    
+
 </body>
 </html>
