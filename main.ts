@@ -68,6 +68,8 @@ if (movments.length > 0 && startRecievingStatus == "END") {
             SuperBit.enMotors.M4,
             movments[index][1]
             )
+
+            console.log(movments[index][2])
             pause(movments[index][2])
 SuperBit.MotorRunDual(
             SuperBit.enMotors.M2,
@@ -75,11 +77,17 @@ SuperBit.MotorRunDual(
             SuperBit.enMotors.M4,
             0
             )
+            pause(500)
             index += 1
         } else {
-            index += 0
-            movments = []
+            index = 0
+            startRecievingStatus = "Start"
             music.playMelody("A - A - A - A - ", 500)
         }
     }
+})
+
+
+input.onButtonPressed(Button.A, function() {
+    startRecievingStatus = "END"
 })
