@@ -2,6 +2,7 @@ serial.onDataReceived(serial.delimiters(Delimiters.NewLine), function () {
     data = serial.readString()
     let dataLetter = data.substr(0,1)
     if (dataLetter == "S") {
+        movments = []
         basic.showLeds(`
             . . # . .
             . . # # .
@@ -13,13 +14,7 @@ serial.onDataReceived(serial.delimiters(Delimiters.NewLine), function () {
         console.log('Start saving...')
 music.playMelody("C C - - - - - - ", 999)
     } else if (dataLetter == "E") {
-        basic.showLeds(`
-            # # . # #
-            # # . # #
-            # # . # #
-            # # . # #
-            # # . # #
-            `)
+        basic.showNumber(movments.length)
         startRecievingStatus = "END"
         console.log('End saving...')
 music.playMelody("C5 C5 - - - - - - ", 999)
@@ -60,7 +55,6 @@ if (movments.length > 0 && startRecievingStatus == "END") {
             `)
         }
     
-
         if (index < movments.length) {
             SuperBit.MotorRunDual(
             SuperBit.enMotors.M2,
