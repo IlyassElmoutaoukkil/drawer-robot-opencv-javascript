@@ -12,16 +12,16 @@ serial.onDataReceived(serial.delimiters(Delimiters.NewLine), function () {
             `)
         startRecievingStatus = "StartSaving"
         console.log('Start saving...')
-music.playMelody("C C - - - - - - ", 999)
+        // music.playMelody("C C - - - - - - ", 999)
     } else if (dataLetter == "E") {
         basic.showNumber(movments.length)
         startRecievingStatus = "END"
         console.log('End saving...')
-music.playMelody("C5 C5 - - - - - - ", 999)
+        // music.playMelody("C5 C5 - - - - - - ", 999)
     } else {
-        music.playMelody("- - - - F F F F ", 999)
+        // music.playMelody("- - - - F F F F ", 999)
         console.log(data + ' saved.')
-dataSplit = data.split("|")
+        dataSplit = data.split("|")
         movments.push([parseFloat(dataSplit[0]), parseFloat(dataSplit[1]), parseFloat(dataSplit[2])])
     }
 })
@@ -45,7 +45,6 @@ controllPen('open')
 basic.forever(function () {
 if (movments.length > 0 && startRecievingStatus == "END") {
         if(index==0){
-            pause(5000)
             basic.showLeds(`
             # # # # #
             # # # # #
@@ -53,9 +52,11 @@ if (movments.length > 0 && startRecievingStatus == "END") {
             # # # # #
             # # # # #
             `)
+            pause(5000)
         }
     
         if (index < movments.length) {
+
             SuperBit.MotorRunDual(
             SuperBit.enMotors.M2,
             movments[index][0],
@@ -65,7 +66,8 @@ if (movments.length > 0 && startRecievingStatus == "END") {
 
             console.log(movments[index][2])
             pause(movments[index][2])
-SuperBit.MotorRunDual(
+            
+            SuperBit.MotorRunDual(
             SuperBit.enMotors.M2,
             0,
             SuperBit.enMotors.M4,
