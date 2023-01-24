@@ -11,18 +11,19 @@ serial.onDataReceived(serial.delimiters(Delimiters.NewLine), function () {
             . . # . .
             `)
         startRecievingStatus = "StartSaving"
-        console.log('Start saving...')
         // music.playMelody("C C - - - - - - ", 999)
     } else if (dataLetter == "E") {
         basic.showNumber(movments.length)
         startRecievingStatus = "END"
-        console.log('End saving...')
         // music.playMelody("C5 C5 - - - - - - ", 999)
     } else {
         // music.playMelody("- - - - F F F F ", 999)
-        console.log(data + ' saved.')
         dataSplit = data.split("|")
-        movments.push([parseFloat(dataSplit[0]), parseFloat(dataSplit[1]), parseFloat(dataSplit[2])])
+        if(dataSplit.length==3){
+            movments.push([parseFloat(dataSplit[0]), parseFloat(dataSplit[1]), parseFloat(dataSplit[2])])
+        }else{
+            movments.push([dataSplit[0]])
+        }
     }
 })
 let dataSplit: string[] = []
@@ -31,17 +32,18 @@ let data2: number[] = []
 let movments: any[][] = []
 let index: number = 0
 let data = ""
+let penIsDown = false
 let startRecievingStatus = ""
 serial.redirectToUSB()
 let startRecievingStatus3 = "initial"
 function controllPen(move: any) {
     if (move == 'open') {
-        return SuperBit.Servo(SuperBit.enServo.S1, 38)
+        return SuperBit.Servo(SuperBit.enServo.S1, 20)
+        penIsDown = true
     }
-    return SuperBit.Servo(SuperBit.enServo.S1, 50)
+    penIsDown = false
+    return SuperBit.Servo(SuperBit.enServo.S1, 80)
 }
-controllPen('close')
-controllPen('open')
 basic.forever(function () {
 if (movments.length > 0 && startRecievingStatus == "END") {
         if(index==0){
@@ -56,25 +58,50 @@ if (movments.length > 0 && startRecievingStatus == "END") {
         }
     
         if (index < movments.length) {
+            if (movments[index].length!=3){
+                let upOrDown : string = movments[index][0]
+                let upOrDown_FL : string = upOrDown.substr(0, 1)
+                if (upOrDown_FL=='U'){
+                    controllPen('open')
+                    basic.showLeds(`
+                    . . # . .
+                    . . # . .
+                    # # # # #
+                    . # # # .
+                    . . # . .
+                    `)
+                }else{
+                    controllPen('close')
+                    basic.showLeds(`
+                    . . # . .
+                    . # # # .
+                    # # # # #
+                    . . # . .
+                    . . # . .
+                    `)
+                    pause(1000)
+                }
 
-            SuperBit.MotorRunDual(
-            SuperBit.enMotors.M2,
-            movments[index][0],
-            SuperBit.enMotors.M4,
-            movments[index][1]
-            )
+                index += 1
+            }else{
+                SuperBit.MotorRunDual(
+                SuperBit.enMotors.M2,
+                movments[index][0],
+                SuperBit.enMotors.M4,
+                movments[index][1]
+                )
 
-            console.log(movments[index][2])
-            pause(movments[index][2])
-            
-            SuperBit.MotorRunDual(
-            SuperBit.enMotors.M2,
-            0,
-            SuperBit.enMotors.M4,
-            0
-            )
-            pause(500)
-            index += 1
+                pause(movments[index][2])
+                
+                SuperBit.MotorRunDual(
+                SuperBit.enMotors.M2,
+                0,
+                SuperBit.enMotors.M4,
+                0
+                )
+                pause(500)
+                index += 1
+            }
         } else {
             index = 0
             startRecievingStatus = "Start"
@@ -86,4 +113,8 @@ if (movments.length > 0 && startRecievingStatus == "END") {
 
 input.onButtonPressed(Button.A, function() {
     startRecievingStatus = "END"
+})
+
+input.onButtonPressed(Button.B, function() {
+    controllPen('')
 })
